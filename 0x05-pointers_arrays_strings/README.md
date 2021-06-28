@@ -1,0 +1,1 @@
+the read me file of project on pointers_ arrays and strings
