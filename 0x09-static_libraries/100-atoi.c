@@ -6,7 +6,7 @@
  *
  * Return: the resulting string
  */
-char *rot13(char *s)
+int _atoi(char *s)
 {
 	int i, j;
 	char a[] = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
