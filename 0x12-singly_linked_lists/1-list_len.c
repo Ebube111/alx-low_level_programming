@@ -1,16 +1,23 @@
-#include "lists.h"
-#include <stddef.h>
+#include <stdio.h>
 #include <stdlib.h>
+#include "lists.h"
+
 /**
- * list_len - finds the number of nodes in a list
- * @h: singly linked list
- * Return: number of elements in a linked list
- */
+* list_len - returns the number of elements in a linked_list
+* @h: pointer to the struct linked_list
+* Return: number of elements
+**/
+
 size_t list_len(const list_t *h)
 {
-	int i;
+	size_t elements;
 
-	for (i = 0; h; i++)
+	elements = 0;
+	while (h)
+	{
 		h = h->next;
-	return (i);
+		elements += 1;
+	}
+
+	return (elements);
 }
