@@ -4,18 +4,24 @@
 #include "lists.h"
 
 /**
- * free_listint - a func that frees a list
- * @head: a pointer point to the head of a list
- */
+* free_listint2 - a func that frees a list
+* @head: a pointer to a pointer that point to a list
+*
+*/
 
-void free_listint(listint_t *head)
+void free_listint2(listint_t **head)
 {
-  listint_t *free_ptr;
+	listint_t *free_ptr;
+	listint_t *ptr;
 
-  while (head != NULL)
-    {
-      free_ptr = head;
-      head = head->next;
-      free(free_ptr);
-    }
+	if (head != NULL)
+	{
+		ptr = *head;
+		while ((free_ptr = ptr) != NULL)
+		{
+			ptr = ptr->next;
+			free(free_ptr);
+		}
+		*head = NULL;
+	}
 }
