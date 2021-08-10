@@ -1,37 +1,45 @@
-#include "main.h"
 #include "holberton.h"
+#include "main.h"
+
 /**
- * read_textfile - reads a text file and prints it
- * to the POSIX standard output
- * @filename: name of the file
- * @letters: number of letters it should read and print
- * Return: actual number of letters it could read and print
- */
+* read_textfile - a function that reads a text file
+*and prints it to the POSIX standard output
+* @filename: the file name
+* @letters: the number of letters
+* Return: the actual number of letters or 0 if fails
+**/
+
 ssize_t read_textfile(const char *filename, size_t letters)
 {
-  int fd, num_to_print, written_num;
-  char *buffer;
+	int f, length, i, res;
+	char *buffer;
 
-  if (!filename)
-    return (0);
+	if (filename == NULL)
+		return (0);
+	/* open */
 
-  fd = open(filename, O_RDONLY);
-  if (fd == -1)
-    return (0);
+	f = open(filename, O_RDONLY);
 
-  buffer = malloc(letters * sizeof(char));
-  if (!buffer)
-    return (0);
+	if (f == -1)
+		return (0);
 
-  /* return Number of bytes read on success */
-  num_to_print = read(fd, buffer, letters);
-  /* return Number of bytes written on success */
-  written_num = write(STDOUT_FILENO, buffer, num_to_print);
+	buffer = malloc(sizeof(char) * letters);
+	if (!buffer)
+		return (0);
 
-  if (written_num < 0)
-    return (0);
+	read(f, buffer, letters);
+	buffer[letters] = '\0';
 
-  free(buffer);
-  close(fd);
-  return (num_to_print);
+	for (i = 0; buffer[i] != '\0'; i += 1)
+		length += 1;
+
+	res = close(f);
+	if (res != 0)
+		exit(-1);
+	res = write(STDOUT_FILENO, buffer, length);
+	if (res != length)
+		return (0);
+	free(buffer);
+
+	return (length);
 }
