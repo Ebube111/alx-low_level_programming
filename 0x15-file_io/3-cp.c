@@ -1,91 +1,65 @@
-#include "holberton.h"
-#include "main.h"
-#define BUF_SIZE 1024
+#include <sys/types.h>
+#include <sys/stat.h>
+#include <fcntl.h>
+#include <unistd.h>
+#include <stdlib.h>
+#include <stdio.h>
 
 /**
- * main - main
- * @argc: number of arguments
- * @argv: a pointer point to the array of arguments
- * Return: Always 0
- **/
-
+ * main - program that copies the content of a file to another file
+ *
+ * @argc: Counts the number of parameters that go into main
+ * @argv: Pointer of array of pointers containing strings entering main
+ * Return: Always 0 on (Success)
+ *
+ * if the number of argument is not the correct one, exit with code 97
+ * and print Usage: cp file_from file_to, followed by a new line,
+ * on the POSIX standard error
+ *
+ * if file_from does not exist, or if you can not read it, exit with
+ * code 98 and print Error: Can't read from file NAME_OF_THE_FILE,
+ * followed by a new line, on the POSIX standard error
+ *
+ * if you can not close a file descriptor ,
+ * exit with code 100 and print Error:
+ * Can't close fd FD_VALUE, followed by a new line,
+ * on the POSIX standard error
+ */
 int main(int argc, char **argv)
 {
-  int f0, f1, res0, res1;
-  char *buffer;
+	int fd_from, fd_to, from_copy, to_copy, c1, c2;
+	char buffer[1024];
 
-  if (argc != 3)
-    {
-      dprintf(STDERR_FILENO, "Usage: cp file_from file_to\n");
-      exit(97);
-    }
-  buffer = malloc(sizeof(char) * BUF_SIZE);
-  if (!buffer)
-    return (0);
+	if (argc != 3)
+		dprintf(STDERR_FILENO, "Usage: cp file_from file_to\n"), exit(97);
 
-  f1 = open(argv[1], O_RDONLY);
-  error_98(f1, buffer, argv[1]);
-  f0 = open(argv[2], O_WRONLY | O_TRUNC | O_CREAT, 0664);
-  error_99(f0, buffer, argv[2]);
-  do {
-    res0 = read(f1, buffer, BUF_SIZE);
-    if (res0 == 0)
-      break;
-    error_98(res0, buffer, argv[1]);
-    res1 = write(f0, buffer, res0);
-    error_99(res1, buffer, argv[2]);
-  } while (res1 >= BUF_SIZE);
-  res0 = close(f0);
-  error_100(res0, buffer);
-  res0 = close(f1);
-  error_100(res0, buffer);
-  free(buffer);
-  return (0);
-}
-
-/**
- * error_98 - checks error 98
- * @f0: the value to check
- * @buffer: the buffer
- * @argv: argument
- **/
-void error_98(int f0, char *buffer, char *argv)
-{
-
-  if (f0 < 0)
-    {
-      dprintf(STDERR_FILENO, "Error: Can't read from file %s\n", argv);
-      free(buffer);
-      exit(98);
-    }
-}
-
-/**
- * error_99 - checks error 99
- * @f0: value to check
- * @buffer: the buffer
- * @argv: argument
- */
-void error_99(int f0, char *buffer, char *argv)
-{
-  if (f0 < 0)
-    {
-      dprintf(STDERR_FILENO, "Error: Can't write to %s\n", argv);
-      free(buffer);
-      exit(99);
-    }
-}
-/**
- * error_100 - checks error 100
- * @f0: the value to check
- * @buffer: the buffer
- */
-void error_100(int f0, char *buffer)
-{
-  if (f0 < 0)
-    {
-      dprintf(STDERR_FILENO, "Error: Can't close fd %i\n", f0);
-      free(buffer);
-      exit(100);
-    }
+	fd_from = open(argv[1], O_RDONLY);
+	if (fd_from == -1)
+	{
+		dprintf(STDERR_FILENO, "Error: Can't read from file %s\n", argv[1]);
+		exit(98);
+	}
+	fd_to = open(argv[2], O_CREAT | O_WRONLY | O_APPEND | O_TRUNC, 0664);
+	if (fd_to == -1)
+		dprintf(STDERR_FILENO, "Error: Can't write to %s\n", argv[2]), exit(99);
+	/* read a copy with a buffer size of 1024 */
+	while ((from_copy = read(fd_from, buffer, 1024)) > 0)
+	{
+		to_copy = write(fd_to, buffer, from_copy);
+		if (from_copy != to_copy)
+			dprintf(STDERR_FILENO, "Error: Can't write to %s\n", argv[2]), exit(99);
+	}
+	if (from_copy == -1)
+	{
+		dprintf(STDERR_FILENO, "Error: Can't read from file %s\n", argv[1]);
+		exit(98);
+	}
+	/*clode fd */
+	c1 = close(fd_from);
+	if (c1 == -1)
+		dprintf(STDERR_FILENO, "Error: Can't close fd %d\n", fd_from), exit(100);
+	c2 = close(fd_to);
+	if (c2 == -1)
+		dprintf(STDERR_FILENO, "Error: Can't close fd %d\n", fd_to), exit(100);
+	return (0);
 }
