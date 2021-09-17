@@ -1,27 +1,27 @@
 #include "lists.h"
-#include <stdio.h>
 
 /**
- *dlistint_len - returns number of elements/nodes
- *@h: pointer to the first node
- *Return:  number of nodes
- */
+* dlistint_len - a function that returns the number
+*of elements in a linked
+* @h: pointer that point to a linked list
+* Return: number of nodes
+*/
 
 size_t dlistint_len(const dlistint_t *h)
 {
-  const dlistint_t *ptr;
-  size_t nodes = 0;
+	const dlistint_t *ptr;
+	size_t i = 0;
 
-  ptr = h;
-  size_t n;
+	if (!h)
+		return (0);
 
-  while (ptr != NULL)
-    {
-      nodes += 1;
-      ptr = ptr->next;
-    }
+	ptr = h;
 
+	while (ptr != NULL)
+	{
+		i += 1;
+		ptr = ptr->next;
+	}
 
-
-  return (nodes);
+	return (i);
 }
