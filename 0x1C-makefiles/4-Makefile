@@ -1,24 +1,22 @@
-# A complete Makefile
-
-CC = gcc
-OBJ = $(SRC:.c=.o)
-NAME = holberton
-SRC = main.c holberton.c
-CFLAGS = -Wall -Werror -Wextra -pedantic
-RM = rm -f
+# test 4
+NAME		=	school
+SRC			=	main.c school.c
+CC			=	gcc
+CFLAGS		=	-Wall -Werror -Wextra -pedantic
+RM			=	rm -f
+OBJ = $(SRC:%.c=%.o)
 
 all: $(OBJ)
-	$(CC) $? -o $(NAME)
+  $(CC) $(CFLAGS) $(OBJ) -o $(NAME)
 
 clean:
 	$(RM) *~ $(NAME)
 
-fclean: clean oclean
-
 oclean:
 	$(RM) $(OBJ)
 
-%.o: %.c
-	$(CC) $(CFLAGS) -c -o $@ $<
+fclean:
+	$(RM) *~ $(NAME)
+	$(RM) $(OBJ)
 
 re: oclean all
